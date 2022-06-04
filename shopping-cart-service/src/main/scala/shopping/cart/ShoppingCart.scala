@@ -9,6 +9,7 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior, ReplyEffec
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 
+// TODO: Refactor ShoppingCart to following Akka Style Guide
 object ShoppingCart {
   sealed trait Command extends CborSerializable
   sealed trait Event extends CborSerializable {
@@ -52,6 +53,7 @@ object ShoppingCart {
     })
   }
 
+  // TODO: Unit test reinvention and persistence failure
   def apply(cartId: String): Behavior[Command] =
     EventSourcedBehavior
       .withEnforcedReplies[Command, Event, State](
