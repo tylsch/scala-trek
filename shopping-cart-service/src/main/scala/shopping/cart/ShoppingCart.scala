@@ -65,14 +65,20 @@ object ShoppingCart {
       .onPersistFailure(SupervisorStrategy.restartWithBackoff(200 millis, 5 seconds, 0.1))
 
   def handleCommand(cartId: String, state: State, command: Command): ReplyEffect[Event, State] = {
-    // TODO: Add guards to check duplicate items and quantity
     command match {
       case AddItem(itemId, quantity, replyTo) =>
-        Effect
-          .persist(ItemAdded(cartId, itemId, quantity))
-          .thenReply(replyTo) { updatedCart =>
-            StatusReply.Success(Summary(updatedCart.items))
-          }
+        if (state.hasItem(itemId))
+          Effect.reply(replyTo)(
+            StatusReply.Error(s"Item '$itemId' was already added to this shopping cart")
+          )
+        else if (quantity <= 0)
+          Effect.reply(replyTo)(StatusReply.Error("Quantity must be greater than zero"))
+        else
+          Effect
+            .persist(ItemAdded(cartId, itemId, quantity))
+            .thenReply(replyTo) { updatedCart =>
+              StatusReply.Success(Summary(updatedCart.items))
+            }
     }
   }
 
