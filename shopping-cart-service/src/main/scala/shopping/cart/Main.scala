@@ -25,6 +25,10 @@ object Main {
   def init(system: ActorSystem[_]): Unit = {
     AkkaManagement(system).start()
     ClusterBootstrap(system).start()
+
+    val httpInterface = system.settings.config.getString("shopping-cart-service.grpc.interface")
+    val httpPort = system.settings.config.getInt("shopping-cart-service.grpc.interface")
+    ShoppingCartServer.start(httpInterface, httpPort, system)
   }
 
 }
