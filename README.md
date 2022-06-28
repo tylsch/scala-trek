@@ -15,6 +15,10 @@ My journey of learning various Scala frameworks and libraries to better improve 
    2. [ ] Scala 3 New Features - Rock the JVM
    3. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM
    4. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM
+   5. [ ] Type-level Programming in Scala
+      1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7
+   6. [ ] Scala Tips - Rock the JVM
+      1. https://www.youtube.com/playlist?list=PLmtsMNDRU0Bzj7INIrLugi3a_WClwQuiS
    5. [ ] SBT - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x806RB1lXm7ZPwCoNaRAL_8
    6. [ ] Hands-on Scala Programming
@@ -24,6 +28,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
 3. Akka
    1. [ ] Akka HTTP with Scala - Rock the JVM
    2. [ ] Akka Streams with Scala - Rock the JVM
+   3. [ ] Akka, Cats, and Cassandra - Rock the JVM
+      1. https://www.youtube.com/playlist?list=PLmtsMNDRU0BwOoOByyvdDanace6rltT2e
    3. [ ] Tour of Akka Typed
       1. https://manuel.bernhardt.io/articles#akka-typed
    4. [ ] Tour of Akka Cluster
@@ -36,6 +42,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
 4. Cats
    1. [ ] Cats - Rock the JVM
    2. [ ] Cats Effect - Rock the JVM
+   3. [ ] Typelevel - Rock the JVM
+      1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
    3. [ ] Scala with Cats Book
       1. https://underscore.io/books/scala-with-cats/
    4. [ ] Making a full-blown Scala Project - Jakub Koziowski
@@ -49,6 +57,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
 5. Zio
    1. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
+   2. [ ] ZIO - Rock the JVM
+      1. https://www.youtube.com/playlist?list=PLmtsMNDRU0Bzu7NfhTiGK7iCYjcFAYlal
 6. Spark
    1. [ ] Spark Essentials with Scala - Rock the JVM
    2. [ ] Spark Streaming with Scala - Rock the JVM
