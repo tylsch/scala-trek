@@ -11,19 +11,21 @@ My journey of learning various Scala frameworks and libraries to better improve 
       2. Part 2 - https://www.youtube.com/playlist?list=PLbgaMIhjbmElia1eCEZNvsVscFef9m0dm
       3. Part 3 - https://www.youtube.com/playlist?list=PLbgaMIhjbmEn64WVX4B08B4h2rOtueWIL
 2. Scala
-   1. [ ] Advance Scala 2 - Rock the JVM
-   2. [ ] Scala 3 New Features - Rock the JVM
-   3. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM
-   4. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM
-   5. [ ] Type-level Programming in Scala
+   1. [ ] Scala Applied Part 1, 2, 3 - Udemy (Dick Wall)
+   2. [ ] Scala Advanced Part 1, 2, 3 - Udemy (Dick Wall)
+   3. [ ] Advance Scala 2 - Rock the JVM
+   4. [ ] Scala 3 New Features - Rock the JVM
+   5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM
+   6. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM
+   7. [ ] Type-level Programming in Scala
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7
-   6. [ ] Scala Tips - Rock the JVM
+   8. [ ] Scala Tips - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0Bzj7INIrLugi3a_WClwQuiS
-   5. [ ] SBT - DevInsideYou
+   9. [ ] SBT - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x806RB1lXm7ZPwCoNaRAL_8
-   6. [ ] Hands-on Scala Programming
+   10. [ ] Hands-on Scala Programming
       1. https://www.handsonscala.com/index.html
-   7. [ ] Diamond Architecture - DevInsideYou
+   11. [ ] Diamond Architecture - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x8i0UudLmrkBqLiJVj8sA7P
 3. Akka
    1. [ ] Akka HTTP with Scala - Rock the JVM
@@ -42,17 +44,18 @@ My journey of learning various Scala frameworks and libraries to better improve 
 4. Cats
    1. [ ] Cats - Rock the JVM
    2. [ ] Cats Effect - Rock the JVM
-   3. [ ] Typelevel - Rock the JVM
+   3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
+   4. [ ] Typelevel - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
-   3. [ ] Scala with Cats Book
+   5. [ ] Scala with Cats Book
       1. https://underscore.io/books/scala-with-cats/
-   4. [ ] Making a full-blown Scala Project - Jakub Koziowski
+   6. [ ] Making a full-blown Scala Project - Jakub Koziowski
       1. https://www.youtube.com/playlist?list=PL1NS3pe5mmu3goZ5sQI-q5nFXtw1jESy0
-   5. [ ] Cats by example - Thomas H
+   7. [ ] Cats by example - Thomas H
       1. https://www.youtube.com/playlist?list=PLy4hTMY6erDBmvZiEDjtCTP8XCdhaXc2c
-   6. [ ] Functional Structures in Scala
+   8. [ ] Functional Structures in Scala
       1. https://www.youtube.com/playlist?list=PLFrwDVdSrYE6dy14XCmUtRAJuhCxuzJp0
-   7. [ ] Easy and Efficient Data Validation with Cats by Daniela Sfregola
+   9. [ ] Easy and Efficient Data Validation with Cats by Daniela Sfregola
       1. https://www.youtube.com/watch?v=P8nGAo3Jp-Q
 5. Zio
    1. [ ] Zio - DevInsideYou
