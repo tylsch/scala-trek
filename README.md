@@ -11,11 +11,11 @@ My journey of learning various Scala frameworks and libraries to better improve 
       2. Part 2 - https://www.youtube.com/playlist?list=PLbgaMIhjbmElia1eCEZNvsVscFef9m0dm
       3. Part 3 - https://www.youtube.com/playlist?list=PLbgaMIhjbmEn64WVX4B08B4h2rOtueWIL
 2. Scala
-   1. [ ] Scala at Lightspeed - Rock the JVM
-   3. [ ] Advance Scala 2 - Rock the JVM
-   4. [ ] Scala 3 New Features - Rock the JVM
-   5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM
-   6. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM
+   1. [ ] Scala at Lightspeed - Rock the JVM :fire:
+   3. [ ] Advance Scala 2 - Rock the JVM :fire:
+   4. [ ] Scala 3 New Features - Rock the JVM :fire:
+   5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM :fire:
+   6. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM :fire:
    7. [ ] Type-level Programming in Scala
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7
    8. [ ] Scala Tips - Rock the JVM
@@ -41,8 +41,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
    6. [ ] Lightbend's *Implementing Micorservices with Akka*
       1. https://developer.lightbend.com/docs/akka-platform-guide/microservices-tutorial/index.html
 4. Cats
-   1. [ ] Cats - Rock the JVM
-   2. [ ] Cats Effect - Rock the JVM
+   1. [ ] Cats - Rock the JVM :fire:
+   2. [ ] Cats Effect - Rock the JVM :fire:
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
    4. [ ] Typelevel - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
