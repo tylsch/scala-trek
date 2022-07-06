@@ -41,8 +41,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
    6. [ ] Lightbend's *Implementing Micorservices with Akka*
       1. https://developer.lightbend.com/docs/akka-platform-guide/microservices-tutorial/index.html
 4. Cats
-   1. [ ] Cats - Rock the JVM :fire:
-   2. [ ] Cats Effect - Rock the JVM :fire:
+   1. [ ] Cats - Rock the JVM
+   2. [ ] Cats Effect - Rock the JVM
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
    4. [ ] Typelevel - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
@@ -62,10 +62,10 @@ My journey of learning various Scala frameworks and libraries to better improve 
    2. [ ] ZIO - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0Bzu7NfhTiGK7iCYjcFAYlal
 6. Spark
-   1. [ ] Spark Essentials with Scala - Rock the JVM
-   2. [ ] Spark Streaming with Scala - Rock the JVM
-   3. [ ] Spark Optimization with Scala - Rock the JVM
-   4. [ ] Spark Performance Tuning with Scala - Rock the JVM
+   1. [ ] Spark Essentials with Scala - Rock the JVM :fire:
+   2. [ ] Spark Streaming with Scala - Rock the JVM :fire:
+   3. [ ] Spark Optimization with Scala - Rock the JVM :fire:
+   4. [ ] Spark Performance Tuning with Scala - Rock the JVM :fire:
 
 ## Projects
 ### Akka
