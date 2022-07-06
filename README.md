@@ -11,8 +11,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
       2. Part 2 - https://www.youtube.com/playlist?list=PLbgaMIhjbmElia1eCEZNvsVscFef9m0dm
       3. Part 3 - https://www.youtube.com/playlist?list=PLbgaMIhjbmEn64WVX4B08B4h2rOtueWIL
 2. Scala
-   1. [ ] Scala Applied Part 1, 2, 3 - Udemy (Dick Wall)
-   2. [ ] Scala Advanced Part 1, 2, 3 - Udemy (Dick Wall)
+   1. [ ] Scala at Lightspeed - Rock the JVM
    3. [ ] Advance Scala 2 - Rock the JVM
    4. [ ] Scala 3 New Features - Rock the JVM
    5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM
