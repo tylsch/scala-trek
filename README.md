@@ -66,11 +66,3 @@ My journey of learning various Scala frameworks and libraries to better improve 
    2. [ ] Spark Streaming with Scala - Rock the JVM :fire:
    3. [ ] Spark Optimization with Scala - Rock the JVM :fire:
    4. [ ] Spark Performance Tuning with Scala - Rock the JVM :fire:
-
-## Projects
-### Akka
-The following projects are a continuation of Lightbend's *Implementing Microservices with Akka tutorial*.  I made some directional changes from Lightbend's tutortial to expand my knowledge in other areas.  I have those documented below.
-#### Applications
-- shopping-cart-service
-#### Changes
-- TBD
