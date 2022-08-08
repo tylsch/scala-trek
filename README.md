@@ -13,9 +13,9 @@ My journey of learning various Scala frameworks and libraries to better improve 
 2. Scala
    1. [X] Scala at Lightspeed - Rock the JVM :fire:
    3. [ ] Advance Scala 2 - Rock the JVM :fire:
-   4. [ ] Scala 3 New Features - Rock the JVM :fire:
-   5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM :fire:
-   6. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM :fire:
+   4. [ ] Scala 3 New Features - Rock the JVM 
+   5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM 
+   6. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM
    7. [ ] Type-level Programming in Scala
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7
    8. [ ] Scala Tips - Rock the JVM
@@ -41,8 +41,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
    6. [ ] Lightbend's *Implementing Micorservices with Akka*
       1. https://developer.lightbend.com/docs/akka-platform-guide/microservices-tutorial/index.html
 4. Cats
-   1. [ ] Cats - Rock the JVM :fire:
-   2. [ ] Cats Effect - Rock the JVM :fire:
+   1. [ ] Cats - Rock the JVM
+   2. [ ] Cats Effect - Rock the JVM
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
    4. [ ] Typelevel - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
@@ -57,11 +57,11 @@ My journey of learning various Scala frameworks and libraries to better improve 
    9. [ ] Easy and Efficient Data Validation with Cats by Daniela Sfregola
       1. https://www.youtube.com/watch?v=P8nGAo3Jp-Q
 5. Zio
-   1. [ ] ZIO 2.0 - Rock the JVM :fire:
+   1. [ ] ZIO 2.0 - Rock the JVM 
    2. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
 6. Spark
-   1. [ ] Spark Essentials with Scala - Rock the JVM
-   2. [ ] Spark Streaming with Scala - Rock the JVM
-   3. [ ] Spark Optimization with Scala - Rock the JVM
-   4. [ ] Spark Performance Tuning with Scala - Rock the JVM
+   1. [ ] Spark Essentials with Scala - Rock the JVM :fire:
+   2. [ ] Spark Streaming with Scala - Rock the JVM :fire:
+   3. [ ] Spark Optimization with Scala - Rock the JVM :fire:
+   4. [ ] Spark Performance Tuning with Scala - Rock the JVM :fire:
