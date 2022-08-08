@@ -45,7 +45,7 @@ object PathDependentTypes extends App {
   trait IntItem extends Item[Int]
   trait StringItem extends Item[String]
 
-  def fetch[ItemType <: ItemLike](key: ItemType#Key): ItemType
+  def fetch[ItemType <: ItemLike](key: ItemType#Key): ItemType = ???
 
   fetch[IntItem](42) //ok
   fetch[StringItem]("home") //ok
