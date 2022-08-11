@@ -6,21 +6,81 @@ services:
       - "4040:4040"
       - "9090:8080"
       - "7077:7077"
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.2
     volumes:
        - ./apps:/opt/spark-apps
        - ./data:/opt/spark-data
     environment:
       - "SPARK_LOCAL_IP=spark-master"
-  spark-worker:
+  spark-worker-1:
     image: spark-worker:latest
+    container_name: spark-worker-1
+    hostname: spark-worker-1
     depends_on:
       - spark-master
+    ports:
+      - "8081:8081"
     environment:
+      - "SPARK_LOCAL_IP=spark-worker-1"
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=1G
       - SPARK_DRIVER_MEMORY=128m
       - SPARK_EXECUTOR_MEMORY=256m
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.3
     volumes:
        - ./apps:/opt/spark-apps
        - ./data:/opt/spark-data
+  spark-worker-2:
+    image: spark-worker:latest
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8081"
+    environment:
+      - "SPARK_LOCAL_IP=spark-worker-2"
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=128m
+      - SPARK_EXECUTOR_MEMORY=256m
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.4
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+  spark-worker-3:
+    image: spark-worker:latest
+    container_name: spark-worker-3
+    hostname: spark-worker-3
+    depends_on:
+      - spark-master
+    ports:
+      - "8083:8081"
+    environment:
+      - "SPARK_LOCAL_IP=spark-worker-3"
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=128m
+      - SPARK_EXECUTOR_MEMORY=256m
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.5
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+networks:
+   spark-network:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 10.5.0.0/16
