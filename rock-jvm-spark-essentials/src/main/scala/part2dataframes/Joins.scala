@@ -1,7 +1,7 @@
 package part2dataframes
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.functions.{col, expr, max}
 
 object Joins extends App {
   val spark = SparkSession.builder()
@@ -85,7 +85,7 @@ object Joins extends App {
 
   // option 3 - rename the offending column and keep the data
   val bandsModDF = bandsDF.withColumnRenamed("id", "band")
-  guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsModDF.col("id"))
+  //guitarPlayersDF.join(bandsDF, guitarPlayersDF.col("band") === bandsModDF.col("id"))
 
   // using complex types
   guitarPlayersDF
@@ -93,4 +93,46 @@ object Joins extends App {
       guitarsDF.withColumnRenamed("id", "guitarId"),
       expr("array_contains(guitars, guitarId)")
     )
+
+  /*
+  * Exercise
+  * 1) Show all employees with their MAX salaries
+  * 2) Show all employees who were never managers
+  * */
+
+  def readTable(tableName: String) = spark.read
+    .format("jdbc")
+    .options(Map(
+      "driver" -> "org.postgresql.Driver",
+      "url" -> "jdbc:postgresql://localhost:5432/rtjvm",
+      "user" -> "docker",
+      "password" -> "docker",
+      "dbtable" -> s"public.$tableName"
+    ))
+    .load()
+
+  val employeesDF = readTable("employees")
+  val salariesDF = readTable("salaries")
+  val deptManagersDF = readTable("dept_manager")
+  val titlesDF = readTable("titles")
+
+  val maxSalariesPerEmpNoDF = salariesDF.groupBy("emp_no").agg(max("salary").as("maxSalary"))
+  val employeesSalariesDF = employeesDF
+    .join(
+      maxSalariesPerEmpNoDF,
+      "emp_no"
+    )
+
+  val nonManagersDF = employeesDF
+    .join(
+      deptManagersDF,
+      employeesDF.col("emp_no") === deptManagersDF.col("emp_no"),
+      "left_anti"
+    )
+
+  val mostRecentJobTitleDF = titlesDF.groupBy("emp_no", "title").agg(max("to_date"))
+  val bestPaidEmployeesDF = employeesSalariesDF.orderBy(col("maxSalary").desc).limit(10)
+  val bestPaidJobsDF = bestPaidEmployeesDF
+    .join(mostRecentJobTitleDF, "emp_no")
+  bestPaidJobsDF.show()
 }
