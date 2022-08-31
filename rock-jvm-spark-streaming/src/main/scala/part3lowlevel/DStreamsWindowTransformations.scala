@@ -71,7 +71,7 @@ object DStreamsWindowTransformations {
       .flatMap(line => line.split(" "))
       .filter(_.length < 5)
       .countByWindow(Seconds(30), Seconds(10))
-      .map(_ * moneyPerExpenseWord)
+      .map(_.toInt * moneyPerExpenseWord)
 
   def showMeTheMoney3(): DStream[Int] =
     readLines()
