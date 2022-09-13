@@ -69,7 +69,7 @@ object StatefulComputations {
     val regularSqlAvgByPostType = socialStream
       .groupByKey(_.postType)
       .agg(sum(col("count")).as("totalCount").as[Int], sum(col("storageUsed")).as("totalStorage").as[Int])
-      .selectExpr("postType", "totalStorage/totalCount as avgStorage")
+      .selectExpr("key as postType", "totalStorage/totalCount as avgStorage")
 
     val averageByPostType = socialStream
       .groupByKey(_.postType)
