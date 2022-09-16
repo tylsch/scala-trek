@@ -22,6 +22,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0Bzj7INIrLugi3a_WClwQuiS
    9. [ ] SBT - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x806RB1lXm7ZPwCoNaRAL_8
+   2. [ ] SBT in Scla Part 1 - Rock the JVM
+      1. https://www.youtube.com/watch?v=itiL7QT2WkI
    10. [ ] Hands-on Scala Programming
       1. https://www.handsonscala.com/index.html
    11. [ ] Diamond Architecture - DevInsideYou
