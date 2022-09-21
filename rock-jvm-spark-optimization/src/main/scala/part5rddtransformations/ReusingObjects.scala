@@ -104,9 +104,52 @@ object ReusingObjects {
     aggregate.collectAsMap()
   }
 
+  // Version 3 - JVM Arrays
+  object UglyTextStates extends Serializable {
+    val nLinesIndex = 0
+    val nWordsIndex = 1
+    val longestWordIndex = 2
+    val occurrencesIndex = 3
+
+    def aggregateNewRecord(textStats: Array[Int], record: String): Array[Int] = {
+      val newWords = record.split(" ")
+
+      var i = 0
+      while (i < newWords.length) {
+        val word = newWords(i)
+        val wordLength = word.length
+
+        textStats(longestWordIndex) = if (wordLength > textStats(longestWordIndex)) wordLength else textStats(longestWordIndex)
+        textStats(occurrencesIndex) += (if (word == "imperdiet") 1 else 0)
+
+        i += 1
+      }
+
+      textStats(nLinesIndex) += 1
+      textStats(nWordsIndex) += newWords.length
+
+      textStats
+    }
+
+    def combineStats(stats: Array[Int], stats2: Array[Int]): Array[Int] = {
+      stats(nLinesIndex) += stats2(nLinesIndex)
+      stats(nWordsIndex) += stats(nWordsIndex)
+      stats(longestWordIndex) = if (stats(longestWordIndex) > stats2(longestWordIndex)) stats(longestWordIndex) else stats2(longestWordIndex)
+      stats(longestWordIndex) += stats2(longestWordIndex)
+      stats
+    }
+  }
+  def collectStats3(): collection.Map[String, Array[Int]] = {
+    val aggregate: RDD[(String, Array[Int])] = text.aggregateByKey(Array.fill(4)(0))(UglyTextStates.aggregateNewRecord, UglyTextStates.combineStats)
+    aggregate.collectAsMap()
+  }
+
   def main(args: Array[String]): Unit = {
 //    generateData()
     collectStats()
     collectStats2()
+    collectStats3()
+
+    Thread.sleep(10000000)
   }
 }
