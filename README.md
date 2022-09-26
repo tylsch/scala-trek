@@ -65,6 +65,6 @@ My journey of learning various Scala frameworks and libraries to better improve 
 6. Spark & Flink
    1. [x] Spark Essentials with Scala - Rock the JVM :fire:
    2. [x] Spark Streaming with Scala - Rock the JVM :fire:
-   3. [ ] Spark Optimization with Scala - Rock the JVM :fire:
+   3. [x] Spark Optimization with Scala - Rock the JVM :fire:
    4. [ ] Spark Performance Tuning with Scala - Rock the JVM :fire:
    5. [ ] Apache Flink - Rock the JVM :fire:
