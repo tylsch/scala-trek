@@ -76,7 +76,32 @@ object SerializationProblems {
     }
   }
   val peopleChecker = new LegalDrinkingAgeChecker(21)
-  peopleChecker.processPeople()
+//  peopleChecker.processPeople()
+
+  // Part 2
+  class PersonProcessor {
+    class DrinkingAgeCheck(legalAge: Int) {
+      val check = {
+        val capturedLegalAge = legalAge
+        age: Int => age >= capturedLegalAge
+      }
+    }
+    class DrinkingAgeFlagger(checker: Int => Boolean) {
+      def flag(): List[Boolean] = {
+        val capturedChecker = checker
+        people.map(p => capturedChecker(p.age)).collect().toList
+      }
+    }
+
+    def processPeople(): List[Boolean] = {
+      val usChecker = new DrinkingAgeCheck(21)
+      val flagger = new DrinkingAgeFlagger(usChecker.check)
+      flagger.flag()
+    }
+  }
+
+  val personProcessor = new PersonProcessor
+  personProcessor.processPeople()
 
 
   def main(args: Array[String]): Unit = {
