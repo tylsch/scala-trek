@@ -31,8 +31,9 @@ My journey of learning various Scala frameworks and libraries to better improve 
    11. [ ] Diamond Architecture - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x8i0UudLmrkBqLiJVj8sA7P
 3. Akka
-   1. [ ] Akka HTTP with Scala - Rock the JVM
-   2. [ ] Akka Streams with Scala - Rock the JVM
+   1. [ ] Akka Typed Essentials - Rock the JVM :fire:
+   1. [ ] Akka HTTP with Scala - Rock the JVM :fire:
+   2. [ ] Akka Streams with Scala - Rock the JVM :fire:
    3. [ ] Akka, Cats, and Cassandra - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0BwOoOByyvdDanace6rltT2e
    3. [ ] Tour of Akka Typed
@@ -45,8 +46,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
    6. [ ] Lightbend's *Implementing Micorservices with Akka*
       1. https://developer.lightbend.com/docs/akka-platform-guide/microservices-tutorial/index.html
 4. Cats
-   1. [ ] Cats - Rock the JVM
-   2. [ ] Cats Effect - Rock the JVM
+   1. [ ] Cats - Rock the JVM :fire:
+   2. [ ] Cats Effect - Rock the JVM :fire:
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
    4. [ ] Typelevel - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
@@ -61,7 +62,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
    9. [ ] Easy and Efficient Data Validation with Cats by Daniela Sfregola
       1. https://www.youtube.com/watch?v=P8nGAo3Jp-Q
 5. Zio
-   1. [ ] ZIO 2.0 - Rock the JVM 
+   1. [ ] ZIO 2.0 - Rock the JVM :fire:
    2. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
 6. Spark & Flink
@@ -69,4 +70,4 @@ My journey of learning various Scala frameworks and libraries to better improve 
    2. [x] Spark Streaming with Scala - Rock the JVM :fire:
    3. [x] Spark Optimization with Scala - Rock the JVM :fire:
    4. [x] Spark Performance Tuning with Scala - Rock the JVM :fire:
-   5. [ ] Apache Flink - Rock the JVM :fire:
+   5. [ ] Apache Flink - Rock the JVM
