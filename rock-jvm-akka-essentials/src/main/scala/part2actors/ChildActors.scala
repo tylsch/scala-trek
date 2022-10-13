@@ -1,6 +1,6 @@
 package part2actors
 
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Terminated}
 import akka.actor.typed.scaladsl.Behaviors
 
 object ChildActors {
@@ -21,6 +21,7 @@ object ChildActors {
     case class CreateChild(name: String) extends Command
     case class TellChild(msg: String) extends Command
     case object StopChild extends Command
+    case object WatchChild extends Command
 
     def apply(): Behavior[Command] = idle()
     def idle(): Behavior[Command] = Behaviors.receive { (context, message) =>
@@ -33,7 +34,7 @@ object ChildActors {
       }
     }
 
-    def active(childRef: ActorRef[String]): Behavior[Command] = Behaviors.receive { (context, message) =>
+    def active(childRef: ActorRef[String]): Behavior[Command] = Behaviors.receive[Command] { (context, message) =>
       message match {
         case TellChild(msg) =>
           context.log.info(s"[parent] Sending message $msg to child")
@@ -43,10 +44,18 @@ object ChildActors {
           context.log.info(s"[parent] stopping child")
           context.stop(childRef) // only works with child actors
           idle()
+        case WatchChild =>
+          context.log.info(s"[parent] watching child")
+          context.watch(childRef) // can use any ActorRef
+          Behaviors.same
         case _ =>
           context.log.info("[parent] command not supported")
           Behaviors.same
       }
+    }.receiveSignal {
+      case (context, Terminated(childRef)) =>
+        context.log.info(s"[parent] child ${childRef.path} was killed by something...")
+        idle()
     }
   }
 
@@ -63,6 +72,7 @@ object ChildActors {
       val parentActor = context.spawn(Parent(), "parent")
       parentActor ! CreateChild("child")
       parentActor ! TellChild("hey kid, you there?")
+      parentActor ! WatchChild
       parentActor ! StopChild
       parentActor ! CreateChild("child2")
       parentActor ! TellChild("hey kid 2, you there?")
@@ -80,9 +90,10 @@ object ChildActors {
     case class CreateChild(name: String) extends Command
     case class TellChild(name: String, msg: String) extends Command
     case class StopChild(name: String) extends Command
+    case class WatchChild(name: String) extends Command
     def apply(): Behavior[Command] = active(Map())
 
-    def active(children: Map[String, ActorRef[String]]): Behavior[Command] = Behaviors.receive { (context, message) =>
+    def active(children: Map[String, ActorRef[String]]): Behavior[Command] = Behaviors.receive[Command] { (context, message) =>
       message match {
         case CreateChild(name) =>
           context.log.info(s"[parent] Creating child actor with name $name")
@@ -95,13 +106,23 @@ object ChildActors {
           Behaviors.same
         case StopChild(name) =>
           val childOption = children.get(name)
-          childOption.fold(context.log.info(s"[parent] child '$name' could not be found"))(context.stop)
+          childOption.fold(context.log.info(s"[parent] Cannot stop '$name' could not be found"))(context.stop)
           active(children - name)
+        case WatchChild(name) =>
+          val childOption = children.get(name)
+          childOption.fold(context.log.info(s"[parent] Cannot watch '$name' could not be found"))(context.watch)
+          Behaviors.same
         case _ =>
           context.log.info("[parent] command not supported")
           Behaviors.same
       }
     }
+      .receiveSignal {
+        case (context, Terminated(childRef)) =>
+          context.log.info(s"[parent] child ${childRef.path} was killed by something...")
+          val childName = childRef.path.name
+          active(children - childName)
+      }
   }
 
   def demoParentChildV2(): Unit = {
@@ -110,6 +131,7 @@ object ChildActors {
       val parentActor = context.spawn(ParentV2(), "parent")
       parentActor ! CreateChild("Alice")
       parentActor ! CreateChild("Bob")
+      parentActor ! WatchChild("Alice")
       parentActor ! TellChild("Alice", "living next door to you")
       parentActor ! TellChild("Daniel", "I hope your Akka skills are good")
       parentActor ! StopChild("Alice")
@@ -119,7 +141,7 @@ object ChildActors {
     }
 
     val system = ActorSystem(userGuardianBehavior, "DemoParentChild")
-    Thread.sleep(10000)
+    Thread.sleep(5000)
     system.terminate()
   }
 
