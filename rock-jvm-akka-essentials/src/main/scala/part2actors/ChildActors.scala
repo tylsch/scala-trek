@@ -20,8 +20,10 @@ object ChildActors {
     trait Command
     case class CreateChild(name: String) extends Command
     case class TellChild(msg: String) extends Command
+    case object StopChild extends Command
 
-    def apply(): Behavior[Command] = Behaviors.receive { (context, message) =>
+    def apply(): Behavior[Command] = idle()
+    def idle(): Behavior[Command] = Behaviors.receive { (context, message) =>
       message match {
         case CreateChild(name) =>
           context.log.info(s"[parent] Creating child actor with name $name")
@@ -37,6 +39,10 @@ object ChildActors {
           context.log.info(s"[parent] Sending message $msg to child")
           childRef ! msg // <- send a message to another actor
           Behaviors.same
+        case StopChild =>
+          context.log.info(s"[parent] stopping child")
+          context.stop(childRef) // only works with child actors
+          idle()
         case _ =>
           context.log.info("[parent] command not supported")
           Behaviors.same
@@ -57,6 +63,9 @@ object ChildActors {
       val parentActor = context.spawn(Parent(), "parent")
       parentActor ! CreateChild("child")
       parentActor ! TellChild("hey kid, you there?")
+      parentActor ! StopChild
+      parentActor ! CreateChild("child2")
+      parentActor ! TellChild("hey kid 2, you there?")
       // user guardian usually has no behavior of its own
       Behaviors.empty
     }
@@ -70,7 +79,7 @@ object ChildActors {
     trait Command
     case class CreateChild(name: String) extends Command
     case class TellChild(name: String, msg: String) extends Command
-
+    case class StopChild(name: String) extends Command
     def apply(): Behavior[Command] = active(Map())
 
     def active(children: Map[String, ActorRef[String]]): Behavior[Command] = Behaviors.receive { (context, message) =>
@@ -81,10 +90,13 @@ object ChildActors {
           val childRef: ActorRef[String] = context.spawn(Child(), name)
           active(children + (name -> childRef))
         case TellChild(name, msg) =>
-
           val childOption = children.get(name)
           childOption.fold(context.log.info(s"[parent] child '$name' could not be found"))(child => child ! msg)
           Behaviors.same
+        case StopChild(name) =>
+          val childOption = children.get(name)
+          childOption.fold(context.log.info(s"[parent] child '$name' could not be found"))(context.stop)
+          active(children - name)
         case _ =>
           context.log.info("[parent] command not supported")
           Behaviors.same
@@ -100,6 +112,8 @@ object ChildActors {
       parentActor ! CreateChild("Bob")
       parentActor ! TellChild("Alice", "living next door to you")
       parentActor ! TellChild("Daniel", "I hope your Akka skills are good")
+      parentActor ! StopChild("Alice")
+      parentActor ! TellChild("Alice", "Hey Alice, you still there")
       // user guardian usually has no behavior of its own
       Behaviors.empty
     }
