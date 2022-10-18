@@ -31,7 +31,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
    11. [ ] Diamond Architecture - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x8i0UudLmrkBqLiJVj8sA7P
 3. Akka
-   1. [ ] Akka Typed Essentials - Rock the JVM :fire:
+   1. [x] Akka Typed Essentials - Rock the JVM
    1. [ ] Akka HTTP with Scala - Rock the JVM :fire:
    2. [ ] Akka Streams with Scala - Rock the JVM :fire:
    3. [ ] Akka, Cats, and Cassandra - Rock the JVM
@@ -66,8 +66,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
    2. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
 6. Spark & Flink
-   1. [x] Spark Essentials with Scala - Rock the JVM :fire:
-   2. [x] Spark Streaming with Scala - Rock the JVM :fire:
-   3. [x] Spark Optimization with Scala - Rock the JVM :fire:
-   4. [x] Spark Performance Tuning with Scala - Rock the JVM :fire:
+   1. [x] Spark Essentials with Scala - Rock the JVM
+   2. [x] Spark Streaming with Scala - Rock the JVM
+   3. [x] Spark Optimization with Scala - Rock the JVM
+   4. [x] Spark Performance Tuning with Scala - Rock the JVM
    5. [ ] Apache Flink - Rock the JVM
