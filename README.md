@@ -33,7 +33,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
 3. Akka
    1. [x] Akka Typed Essentials - Rock the JVM
    1. [ ] Akka HTTP with Scala - Rock the JVM :fire:
-   2. [ ] Akka Streams with Scala - Rock the JVM :fire:
+   2. [x] Akka Streams with Scala - Rock the JVM
    3. [ ] Akka, Cats, and Cassandra - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0BwOoOByyvdDanace6rltT2e
    3. [ ] Tour of Akka Typed
