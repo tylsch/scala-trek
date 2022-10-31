@@ -13,6 +13,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="sbt: ch.qos.logback:logback-classic:1.4.4:jar" level="project" />
+    <orderEntry type="library" name="sbt: ch.qos.logback:logback-core:1.4.4:jar" level="project" />
     <orderEntry type="library" name="sbt: com.typesafe.akka:akka-actor-typed_2.13:2.7.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.typesafe.akka:akka-actor_2.13:2.7.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.typesafe.akka:akka-http-core_2.13:10.4.0:jar" level="project" />
@@ -49,6 +51,6 @@
     <orderEntry type="library" name="sbt: org.scalatest:scalatest-shouldmatchers_2.13:3.2.14:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scalatest:scalatest-wordspec_2.13:3.2.14:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scalatest:scalatest_2.13:3.2.14:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:1.7.36:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:2.0.1:jar" level="project" />
   </component>
 </module>
