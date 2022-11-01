@@ -34,7 +34,7 @@ object HttpsContext {
 
 object LowLevelHttps extends App {
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "LowLevelHttps")
-  
+
   val requestHandler: HttpRequest => HttpResponse = {
     case HttpRequest(HttpMethods.GET, _, _, _, _) =>
       HttpResponse(
