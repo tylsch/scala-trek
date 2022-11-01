@@ -12,7 +12,6 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Sink
 import akka.util.Timeout
-import part2_lowlevelserver.GuitarDB.{CreateGuitar, FindAllGuitars, GuitarCreated}
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
@@ -22,13 +21,15 @@ import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
 
-case class Guitar(make: String, model: String)
+case class Guitar(make: String, model: String, quantity: Int)
 
 object GuitarDB {
   trait Command
   case class CreateGuitar(guitar: Guitar, replyTo: ActorRef[GuitarCreated]) extends Command
   case class FindGuitar(id: Int, replyTo: ActorRef[Option[Guitar]]) extends Command
   case class FindAllGuitars(replyTo: ActorRef[List[Guitar]]) extends Command
+  case class AddQuantity(id: Int, quantity: Int, replyTo: ActorRef[Option[Guitar]]) extends Command
+  case class FindGuitarsByStock(inStock: Boolean, replyTo: ActorRef[List[Guitar]]) extends Command
 
   trait Event
   case class GuitarCreated(id: Int) extends Event
@@ -45,17 +46,36 @@ object GuitarDB {
         ctx.log.info(s"Searching guitar by id: $id")
         replyTo ! guitars.get(id)
         Behaviors.same
+      case FindGuitarsByStock(inStock, replyTo) =>
+        ctx.log.info(s"Searching for all guitars in ${if (inStock) "in" else "out of" } stock")
+        if (inStock)
+          replyTo ! guitars.values.filter(_.quantity > 0).toList
+        else
+          replyTo ! guitars.values.filter(_.quantity == 0).toList
+
+        Behaviors.same
       case CreateGuitar(guitar, replyTo) =>
         ctx.log.info(s"Adding guitar $guitar with id $currentId")
         replyTo ! GuitarCreated(currentId)
         state(currentId + 1, guitars + (currentId -> guitar))
+      case AddQuantity(id, quantity, replyTo) =>
+        ctx.log.info(s"Trying to add $quantity items for guitar: $id")
+        val guitar = guitars.get(id)
+        val newGuitar = guitar.map {
+          case Guitar(make, model, q) => Guitar(make, model, q + quantity)
+        }
+        replyTo ! newGuitar
+        newGuitar match {
+          case Some(guitar) => state(currentId, guitars + (id -> guitar))
+          case None => Behaviors.same
+        }
       case _ => Behaviors.same
     }
   }
 }
 
 trait GuitarJsonSupport extends SprayJsonSupport {
-  implicit val guitarFormat: RootJsonFormat[Guitar] = jsonFormat2(Guitar)
+  implicit val guitarFormat: RootJsonFormat[Guitar] = jsonFormat3(Guitar)
 }
 
 object Server extends GuitarJsonSupport {
@@ -67,6 +87,7 @@ object Server extends GuitarJsonSupport {
 
   def apply(host: String, port: Int): Behavior[Message] = Behaviors.setup { ctx =>
     import akka.actor.typed.scaladsl.AskPattern.schedulerFromActorSystem
+    import part2_lowlevelserver.GuitarDB._
 
     implicit val system: ActorSystem[Nothing] = ctx.system
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
@@ -75,8 +96,25 @@ object Server extends GuitarJsonSupport {
     val guitarsDb = ctx.spawn(GuitarDB(), "GuitarsDB")
 
     val asyncRequestHandler: HttpRequest => Future[HttpResponse] = {
-      case HttpRequest(HttpMethods.GET, Uri.Path("/api/guitar"), _, _, _) =>
-        val guitarsFuture = (guitarsDb ? FindAllGuitars).mapTo[List[Guitar]]
+      case HttpRequest(HttpMethods.POST, uri@Uri.Path("/api/guitar/inventory"), _, _, _) =>
+        val query = uri.query() // query object <=> map[String, String]
+        val guitarId = query.get("id").map(_.toInt)
+        val guitarQty = query.get("qty").map(_.toInt)
+
+        val validGuitarResponseFuture = for {
+          id <- guitarId
+          qty <- guitarQty
+        } yield {
+          val newGuitarFuture = guitarsDb.ask(AddQuantity(id, qty, _)).mapTo[Option[Guitar]]
+          newGuitarFuture.map(_ => HttpResponse(StatusCodes.OK))
+        }
+
+        validGuitarResponseFuture.getOrElse(Future(HttpResponse(StatusCodes.BadRequest)))
+      case HttpRequest(HttpMethods.GET, uri@Uri.Path("/api/guitar/inventory"), _, _, _)  =>
+        val query = uri.query()
+        val inStock = query.get("inStock").map(_.toBoolean)
+
+        val guitarsFuture = guitarsDb.ask(FindGuitarsByStock(inStock.getOrElse(false), _)).mapTo[List[Guitar]]
         guitarsFuture.map { guitars =>
           HttpResponse(
             entity = HttpEntity(
@@ -84,6 +122,36 @@ object Server extends GuitarJsonSupport {
               guitars.toJson.prettyPrint
             )
           )
+        }
+
+      case HttpRequest(HttpMethods.GET, uri@Uri.Path("/api/guitar"), _, _, _) =>
+        val query = uri.query() // query object <=> map[String, String]
+        if (query.isEmpty) {
+          val guitarsFuture = (guitarsDb ? FindAllGuitars).mapTo[List[Guitar]]
+          guitarsFuture.map { guitars =>
+            HttpResponse(
+              entity = HttpEntity(
+                ContentTypes.`application/json`,
+                guitars.toJson.prettyPrint
+              )
+            )
+          }
+        } else {
+          val guitarId = query.get("id").map(_.toInt)
+          guitarId match {
+            case None => Future(HttpResponse(StatusCodes.NotFound))
+            case Some(id: Int) =>
+              val getGuitarFuture = guitarsDb.ask(FindGuitar(id, _)).mapTo[Option[Guitar]]
+              getGuitarFuture.map {
+                case None => HttpResponse(StatusCodes.NotFound)
+                case Some(guitar) => HttpResponse(
+                  entity = HttpEntity(
+                    ContentTypes.`application/json`,
+                    guitar.toJson.prettyPrint
+                  )
+                )
+              }
+          }
         }
       case HttpRequest(HttpMethods.POST, Uri.Path("/api/guitar"), _, entity, _) =>
         val strictEntityFuture = entity.toStrict(3 seconds)
