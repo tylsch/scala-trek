@@ -1,5 +1,6 @@
 package part3_highlevelserver
 
+import akka.actor.typed.scaladsl.AskPattern.Askable
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
@@ -9,7 +10,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
-import spray.json._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
@@ -67,11 +68,7 @@ object GameAreaMap {
   }
 }
 
-trait PlayerSupport extends SprayJsonSupport {
-  implicit val playerFormat: RootJsonFormat[Player] = jsonFormat3(Player)
-}
-
-object Server extends PlayerSupport {
+object ServerMarshalling {
 
   sealed trait Message
   private final case class StartFailed(cause: Throwable) extends Message
@@ -85,6 +82,7 @@ object Server extends PlayerSupport {
     implicit val system: ActorSystem[Nothing] = ctx.system
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
     implicit val timeout: Timeout = Timeout(2 seconds)
+    implicit val playerFormat: RootJsonFormat[Player] = jsonFormat3(Player)
 
     val gameAreaMap = ctx.spawn(GameAreaMap(), "GameAreaMap")
 
@@ -94,26 +92,27 @@ object Server extends PlayerSupport {
           get {
             concat(
               path("class" / Segment) { characterClass =>
-                // TODO 1: Get all the players with characterClass
-                reject
+                val playersByClassFuture = gameAreaMap.ask(GetPlayerByClass(characterClass, _)).mapTo[List[Player]]
+                complete(playersByClassFuture)
               },
               (path(Segment) | parameter("nickName")) { nickName =>
-                // TODO 2: Get all the players with nickname
-                reject
+                val playerByNicknameFuture = gameAreaMap.ask(GetPlayer(nickName, _)).mapTo[Option[Player]]
+                complete(playerByNicknameFuture)
               },
               pathEndOrSingleSlash {
-                // TODO 3: Get all the players
-                reject
+                complete(gameAreaMap.ask(GetAllPlayers).mapTo[List[Player]])
               }
             )
           },
           post {
-            // TODO 4: Add a player
-            reject
+            entity(as[Player]) { player =>
+              complete(gameAreaMap.ask(AddPlayer(player, _)).map(_ => StatusCodes.OK))
+            }
           },
           delete {
-            // TODO 5: Remove a player
-            reject
+            entity(as[Player]) { player =>
+              complete(gameAreaMap.ask(RemovePlayer(player, _)).map(_ => StatusCodes.OK))
+            }
           }
         )
       }
@@ -160,5 +159,5 @@ object Server extends PlayerSupport {
 }
 
 object MarshallingJson extends App {
-  val system: ActorSystem[Server.Message] = ActorSystem(Server("localhost", 8080), "MarshallingJson")
+  val system: ActorSystem[ServerMarshalling.Message] = ActorSystem(ServerMarshalling("localhost", 8080), "MarshallingJson")
 }
