@@ -22,17 +22,19 @@ My journey of learning various Scala frameworks and libraries to better improve 
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0Bzj7INIrLugi3a_WClwQuiS
    9. [ ] SBT - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x806RB1lXm7ZPwCoNaRAL_8
-   2. [ ] SBT in Scala Part 1 - Rock the JVM
+   2. [x] SBT in Scala Part 1 - Rock the JVM
       1. https://www.youtube.com/watch?v=itiL7QT2WkI
-   3. [ ] SBT in Scala Part 2 - Rock the JVM
+   3. [x] SBT in Scala Part 2 - Rock the JVM
       1. https://www.youtube.com/watch?v=HBZDKt9ZqSg
+   4. [ ] SBT in Scala Part 3 - Rock the JVM
+      1. https://www.youtube.com/watch?v=VEEG1KnFAac
    10. [ ] Hands-on Scala Programming
       1. https://www.handsonscala.com/index.html
    11. [ ] Diamond Architecture - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x8i0UudLmrkBqLiJVj8sA7P
 3. Akka
    1. [x] Akka Typed Essentials - Rock the JVM
-   1. [x] Akka HTTP with Scala - Rock the JVM :fire:
+   1. [x] Akka HTTP with Scala - Rock the JVM
    2. [x] Akka Streams with Scala - Rock the JVM
    3. [ ] Akka, Cats, and Cassandra - Rock the JVM
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0BwOoOByyvdDanace6rltT2e
