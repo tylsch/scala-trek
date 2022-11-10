@@ -26,7 +26,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
       1. https://www.youtube.com/watch?v=itiL7QT2WkI
    3. [x] SBT in Scala Part 2 - Rock the JVM
       1. https://www.youtube.com/watch?v=HBZDKt9ZqSg
-   4. [ ] SBT in Scala Part 3 - Rock the JVM
+   4. [x] SBT in Scala Part 3 - Rock the JVM
       1. https://www.youtube.com/watch?v=VEEG1KnFAac
    10. [ ] Hands-on Scala Programming
       1. https://www.handsonscala.com/index.html
