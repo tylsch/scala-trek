@@ -11,7 +11,7 @@ object HandlingErrors {
   trait MyApplicativeError[M[_], E] extends Applicative[M] {
     def raiseError[A](e: E): M[A]
     def handleErrorWith[A](ma: M[A])(func: E => M[A]): M[A]
-    def handleError[A](ma: M[A])(func: E => M[A]): M[A] = handleErrorWith(ma)(e => pure(func(e)))
+    //def handleError[A](ma: M[A])(func: E => M[A]): M[A] = handleErrorWith(ma)(e => pure(func(e)))
   }
   trait MyMonadError[M[_], E] extends MyApplicativeError[M , E] with Monad[M] {
     def ensure[A](ma: M[A])(error: E)(predicate: A => Boolean): M[A]
