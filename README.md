@@ -48,7 +48,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
    6. [ ] Lightbend's *Implementing Micorservices with Akka*
       1. https://developer.lightbend.com/docs/akka-platform-guide/microservices-tutorial/index.html
 4. Cats
-   1. [ ] Cats - Rock the JVM :fire:
+   1. [x] Cats - Rock the JVM
    2. [ ] Cats Effect - Rock the JVM :fire:
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
    4. [ ] Typelevel - Rock the JVM
