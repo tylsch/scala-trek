@@ -6,6 +6,6 @@ lazy val root = (project in file("."))
   .settings(
     name := "rock-jvm-cats-effect",
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % "3.4.0",
+      "org.typelevel" %% "cats-effect" % "3.4.1",
     )
   )
