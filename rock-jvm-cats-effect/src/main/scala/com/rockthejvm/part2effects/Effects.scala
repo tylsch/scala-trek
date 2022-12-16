@@ -1,6 +1,7 @@
 package com.rockthejvm.part2effects
 
 import scala.concurrent.Future
+import scala.io.StdIn
 
 object Effects {
 
@@ -67,7 +68,35 @@ object Effects {
     42
   })
 
+  val clock: MyIO[Long] = MyIO(() => System.currentTimeMillis())
+
+  def measure[A](computation: MyIO[A]): MyIO[Long] = for {
+    startTime <- clock
+    _ <- computation
+    finishTime <- clock
+  } yield finishTime - startTime
+
+  def testTimeIO(): Unit = {
+    val test = measure(MyIO(() => Thread.sleep(1000)))
+    println(test.unsafeRun())
+  }
+
+  def putStrLn(line: String): MyIO[Unit] = MyIO(() => println(line))
+
+  val read: MyIO[String] = MyIO(() => StdIn.readLine())
+
+  def testConsole(): Unit = {
+    val program: MyIO[Unit] = for {
+      line1 <- read
+      line2 <- read
+      _ <- putStrLn(line1 + line2)
+    } yield ()
+
+    program.unsafeRun()
+  }
+
   def main(args: Array[String]): Unit = {
-    anIO.unsafeRun()
+    testTimeIO()
+    testConsole()
   }
 }
