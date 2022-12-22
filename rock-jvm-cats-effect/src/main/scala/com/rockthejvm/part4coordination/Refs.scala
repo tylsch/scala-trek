@@ -3,6 +3,7 @@ package com.rockthejvm.part4coordination
 import cats.effect.{IO, IOApp, Ref}
 import cats.syntax.parallel._
 import com.rockthejvm.utils._
+import scala.concurrent.duration.*
 
 object Refs extends IOApp.Simple {
 
@@ -85,5 +86,70 @@ object Refs extends IOApp.Simple {
     } yield ()
   }
 
-  override def run: IO[Unit] = demoConcurrentWorkPure()
+  def tickingClockImpure(): IO[Unit] = {
+    var ticks: Long = 0L
+    def tickingClock: IO[Unit] = for {
+      _ <- IO.sleep(1.second)
+      _ <- IO(System.currentTimeMillis()).debugM
+      _ <- IO(ticks += 1)
+      _ <- tickingClock
+    } yield ()
+
+    def printTicks: IO[Unit] = for {
+      _ <- IO.sleep(5.seconds)
+      _ <- IO(s"TICKS: $ticks").debugM
+      _ <- printTicks
+    } yield ()
+
+    for {
+      _ <- (tickingClock, printTicks).parTupled
+    } yield ()
+  }
+
+  def tickngClockPure(): IO[Unit] = {
+    def tickingClock(ticks: Ref[IO, Int]): IO[Unit] = for {
+      _ <- IO.sleep(1.second)
+      _ <- IO(System.currentTimeMillis()).debugM
+      _ <- ticks.update(_ + 1)
+      _ <- tickingClock(ticks)
+    } yield ()
+
+    def printTicks(ticks: Ref[IO, Int]): IO[Unit] = for {
+      _ <- IO.sleep(5.seconds)
+      t <- ticks.get
+      _ <- IO(s"TICKS: $t").debugM
+      _ <- printTicks(ticks)
+    } yield ()
+
+    for {
+      tickRef <- Ref[IO].of(0)
+      _ <- (tickingClock(tickRef), printTicks(tickRef)).parTupled
+    } yield ()
+  }
+
+  def tickingClockWeird(): IO[Unit] = {
+    val ticks = Ref[IO].of(0)
+
+    def tickingClock: IO[Unit] = for {
+      t <- ticks // ticks will give you a NEW ref
+      _ <- IO.sleep(1.second)
+      _ <- IO(System.currentTimeMillis()).debugM
+      _ <- t.update(_ + 1)
+      _ <- tickingClock
+    } yield ()
+
+    def printTicks: IO[Unit] = for {
+      t <- ticks // ticks will give you a NEW ref
+      _ <- IO.sleep(5.seconds)
+      currentTicks <- t.get
+      _ <- IO(s"TICKS: $currentTicks").debugM
+      _ <- printTicks
+    } yield ()
+
+    for {
+      _ <- (tickingClock, printTicks).parTupled
+    } yield ()
+  }
+
+  override def run: IO[Unit] = tickingClockWeird()
 }
