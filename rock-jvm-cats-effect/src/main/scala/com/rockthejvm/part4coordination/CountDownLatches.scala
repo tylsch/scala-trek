@@ -1,7 +1,7 @@
 package com.rockthejvm.part4coordination
 
 import cats.effect.std.CountDownLatch
-import cats.effect.{IO, IOApp, Resource}
+import cats.effect.{Deferred, IO, IOApp, Ref, Resource}
 import cats.syntax.traverse.*
 import cats.syntax.parallel.*
 
@@ -79,7 +79,7 @@ object CountDownLatches extends IOApp.Simple {
       case (reader, writer) => IO(reader.getLines().foreach(writer.write))
     }
 
-  def createFileDownloaderTask(id: Int, latch: CountDownLatch[IO], fileName: String, destFolder: String): IO[Unit] =
+  def createFileDownloaderTask(id: Int, latch: CDLatch, fileName: String, destFolder: String): IO[Unit] =
     for
       _ <- IO(s"[task $id] downloading chuck...").debugM
       _ <- IO.sleep((Random.nextDouble * 1000).toInt.millis)
@@ -92,7 +92,7 @@ object CountDownLatches extends IOApp.Simple {
   def downloadFile(fileName: String, destFolder: String): IO[Unit] =
     for
       n <- FileServer.getNumChunks
-      latch <- CountDownLatch[IO](n)
+      latch <- CDLatch(n)
       _ <- IO(s"Download started on ${n} fibers.").debugM
       _ <- (0 until n).toList.parTraverse(id => createFileDownloaderTask(id, latch, fileName, destFolder))
       _ <- latch.await
@@ -102,3 +102,28 @@ object CountDownLatches extends IOApp.Simple {
 
   override def run: IO[Unit] = downloadFile("myScalaFile.txt", "src/main/resources")
 }
+
+abstract class CDLatch:
+  def await: IO[Unit]
+  def release: IO[Unit]
+
+object CDLatch:
+  sealed trait State
+  case object Done extends State
+  case class Live(remainingCount: Int, signal: Deferred[IO, Unit]) extends State
+
+  def apply(count: Int): IO[CDLatch] =
+    for
+      signal <- Deferred[IO, Unit]
+      state <- Ref[IO].of[State](Live(count, signal))
+    yield new CDLatch:
+      override def await: IO[Unit] = state.get.flatMap { s =>
+        if (s == Done) IO.unit // continue, the latch is dead
+        else signal.get // block here
+      }
+
+      override def release: IO[Unit] = state.modify {
+        case Done => Done -> IO.unit
+        case Live(1, signal) => Done -> signal.complete(()).void
+        case Live(remainingCount, signal) => Live(remainingCount - 1, signal) -> IO.unit
+      }.flatten.uncancelable
