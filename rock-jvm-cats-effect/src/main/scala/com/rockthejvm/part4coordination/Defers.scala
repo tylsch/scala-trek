@@ -1,6 +1,6 @@
 package com.rockthejvm.part4coordination
 
-import cats.effect.{Deferred, IO, IOApp, Ref}
+import cats.effect.{Deferred, FiberIO, IO, IOApp, OutcomeIO, Ref}
 import cats.syntax.traverse.*
 import com.rockthejvm.utils.*
 
@@ -96,5 +96,52 @@ object Defers extends IOApp.Simple {
     } yield ()
   }
 
-  override def run: IO[Unit] = fileNotifierWithDeferred()
+  def eggBoiler(): IO[Unit] = {
+    def eggReadyNotification(signal: Deferred[IO, Unit]) =
+      for {
+        _ <- IO("Egg boiling on some other fiber, waiting...").debugM
+        _ <- signal.get
+        _ <- IO("EGG READY!!!").debugM
+      } yield ()
+
+    def tickingClock(ticks: Ref[IO, Int], signal: Deferred[IO, Unit]): IO[Unit] =
+      for {
+        _ <- IO.sleep(500.millis)
+        count <- ticks.updateAndGet(_ + 1)
+        _ <- IO(count).debugM
+        _ <- if (count >= 10) signal.complete(()) else tickingClock(ticks, signal)
+      } yield ()
+
+    for {
+      counter <- Ref[IO].of(0)
+      signal <- Deferred[IO, Unit]
+      fibNotifier <- eggReadyNotification(signal).start
+      clock <- tickingClock(counter, signal).start
+      _ <- fibNotifier.join
+      _ <- clock.join
+    } yield ()
+  }
+
+  type RaceResult[A, B] = Either[(OutcomeIO[A], FiberIO[B]), (FiberIO[A], OutcomeIO[B])]
+  type EitherOutcome[A, B] = Either[OutcomeIO[A], OutcomeIO[B]]
+  def ourRacePair[A, B](ioa: IO[A], iob: IO[B]): IO[RaceResult[A, B]] = IO.uncancelable { poll =>
+    for {
+      signal <- Deferred[IO, EitherOutcome[A, B]]
+      fibA <- ioa.guaranteeCase(outcomeA => signal.complete(Left(outcomeA)).void).start
+      fibB <- iob.guaranteeCase(outcomeB => signal.complete(Right(outcomeB)).void).start
+      result <- poll(signal.get).onCancel {
+        // blocking call - should be cancelable
+        for {
+          cancelFibA <- fibA.cancel.start
+          cancelFibB <- fibB.cancel.start
+          _ <- cancelFibA.join
+          _ <- cancelFibB.join
+        } yield ()
+      }
+    } yield result match
+      case Left(value) => Left((value, fibB))
+      case Right(value) => Right((fibA, value))
+  }
+
+  override def run: IO[Unit] = eggBoiler()
 }
