@@ -1,5 +1,6 @@
 package com.rockthejvm.part4coordination
 
+import cats.effect.kernel.Outcome.{Canceled, Errored, Succeeded}
 import cats.effect.{Deferred, IO, IOApp, Ref}
 import cats.syntax.parallel.*
 
@@ -19,25 +20,50 @@ object Mutex {
   val unlocked = State(locked = false, Queue())
 
   def createSignal(): IO[Signal] = Deferred[IO, Unit]
-  def create: IO[Mutex] = Ref[IO].of(unlocked).map { state =>
-    new Mutex:
-      override def acquire: IO[Unit] = createSignal().flatMap { signal =>
+  def create: IO[Mutex] = Ref[IO].of(unlocked).map(createMutexWithCancellation)
+
+  def createMutexWithCancellation(state: Ref[IO, State]): Mutex = new Mutex:
+    override def acquire: IO[Unit] = IO.uncancelable { poll =>
+      createSignal().flatMap { signal =>
+        val cleanup = state.modify {
+          case State(locked, queue) =>
+            val newQueue = queue.filterNot(_ eq signal)
+            State(locked, newQueue) -> release
+        }.flatten
+
         state.modify {
           case State(false, _) => State(true, Queue()) -> IO.unit
-          case State(true, queue) => State(true, queue.enqueue(signal)) -> signal.get
+          case State(true, queue) => State(true, queue.enqueue(signal)) -> poll(signal.get).onCancel(cleanup)
         }.flatten // modify returns IO[B], our B is IO[Unit], so modify returns IO[IO[Unit]], we need to flatten
       }
+    }
 
-      override def release: IO[Unit] = state.modify {
-        case State(false, _) => unlocked -> IO.unit
-        case State(true, queue) =>
-          if (queue.isEmpty) unlocked -> IO.unit
-          else {
-            val (signal, rest) = queue.dequeue
-            State(true, rest) -> signal.complete(()).void
-          }
-      }.flatten
-  }
+    override def release: IO[Unit] = state.modify {
+      case State(false, _) => unlocked -> IO.unit
+      case State(true, queue) =>
+        if (queue.isEmpty) unlocked -> IO.unit
+        else {
+          val (signal, rest) = queue.dequeue
+          State(true, rest) -> signal.complete(()).void
+        }
+    }.flatten
+
+  def createSimpleMutex(state: Ref[IO, State]): Mutex = new Mutex:
+    override def acquire: IO[Unit] = createSignal().flatMap { signal =>
+      state.modify {
+        case State(false, _) => State(true, Queue()) -> IO.unit
+        case State(true, queue) => State(true, queue.enqueue(signal)) -> signal.get
+      }.flatten // modify returns IO[B], our B is IO[Unit], so modify returns IO[IO[Unit]], we need to flatten
+    }
+    override def release: IO[Unit] = state.modify {
+      case State(false, _) => unlocked -> IO.unit
+      case State(true, queue) =>
+        if (queue.isEmpty) unlocked -> IO.unit
+        else {
+          val (signal, rest) = queue.dequeue
+          State(true, rest) -> signal.complete(()).void
+        }
+    }.flatten
 }
 
 object MutexPlayground extends IOApp.Simple {
@@ -72,5 +98,24 @@ object MutexPlayground extends IOApp.Simple {
     } yield tasks
     // only one task will proceed at one time
 
-  override def run: IO[Unit] = demoLockingTasks().debugM.void
+  def createCancellingTask(id: Int, mutex: Mutex): IO[Int] =
+    if (id % 2 == 0) createLockingTask(id, mutex)
+    else for {
+      fib <- createLockingTask(id, mutex).onCancel(IO(s"[task $id] received cancellation!").debugM.void).start
+      _ <- IO.sleep(2.seconds) >> fib.cancel
+      out <- fib.join
+      result <- out match {
+        case Succeeded(effect) => effect
+        case Errored(_) => IO(-1)
+        case Canceled() => IO(-2)
+      }
+    } yield result
+
+  def demoCancellingTasks() =
+    for {
+      mutex <- Mutex.create
+      tasks <- (1 to 10).toList.parTraverse(id => createLockingTask(id, mutex))
+    } yield tasks
+
+  override def run: IO[Unit] = demoCancellingTasks().debugM.void
 }
