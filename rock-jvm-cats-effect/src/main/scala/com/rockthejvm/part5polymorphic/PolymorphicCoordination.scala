@@ -1,6 +1,7 @@
 package com.rockthejvm.part5polymorphic
 
-import cats.effect.{Concurrent, Deferred, IO, IOApp, Ref, Spawn}
+import cats.effect.kernel.Outcome
+import cats.effect.{Concurrent, Deferred, Fiber, IO, IOApp, Ref, Spawn}
 
 object PolymorphicCoordination extends IOApp.Simple {
 
@@ -71,6 +72,34 @@ object PolymorphicCoordination extends IOApp.Simple {
       _ <- fibNotifier.join
       _ <- clock.join
     } yield ()
+  }
+
+  // Exercise - Generalize RacePair
+
+  type RaceResult[F[_], A, B] = Either[(Outcome[F, Throwable, A], Fiber[F, Throwable, B]), (Fiber[F, Throwable, A], Outcome[F, Throwable, B])]
+  type EitherOutcome[F[_], A, B] = Either[Outcome[F, Throwable, A], Outcome[F, Throwable, B]]
+
+  import cats.effect.syntax.monadCancel.*
+  import cats.effect.syntax.spawn.*
+
+  def ourRacePair[F[_], A, B](fa: F[A], fb: F[B])(using concurrent: Concurrent[F]): F[RaceResult[F, A, B]] =
+    concurrent.uncancelable { poll =>
+      for {
+        signal <- concurrent.deferred[EitherOutcome[F, A, B]]
+        fibA <- fa.guaranteeCase(outcomeA => signal.complete(Left(outcomeA)).void).start
+        fibB <- fb.guaranteeCase(outcomeB => signal.complete(Right(outcomeB)).void).start
+        result <- poll(signal.get).onCancel {
+          // blocking call - should be cancelable
+          for {
+            cancelFibA <- fibA.cancel.start
+            cancelFibB <- fibB.cancel.start
+            _ <- cancelFibA.join
+            _ <- cancelFibB.join
+          } yield ()
+        }
+      } yield result match
+        case Left(value) => Left((value, fibB))
+        case Right(value) => Right((fibA, value))
   }
 
   override def run: IO[Unit] = polymorphicEggBoiler[IO]
