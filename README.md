@@ -13,8 +13,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
 2. Scala
    1. [X] Scala at Lightspeed - Rock the JVM
    3. [X] Advance Scala 2 - Rock the JVM
-   4. [ ] Scala 3 New Features - Rock the JVM 
-   5. [ ] Scala 3 & Functional Programming Essentials - Rock the JVM 
+   4. [X] Scala 3 New Features - Rock the JVM 
+   5. [X] Scala 3 & Functional Programming Essentials - Rock the JVM 
    6. [ ] Advanced Scala 3 and Functional Programming - Rock the JVM
    7. [ ] Type-level Programming in Scala
       1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByOQoz6lnihh6CtMrErNax7
@@ -28,6 +28,11 @@ My journey of learning various Scala frameworks and libraries to better improve 
       1. https://www.youtube.com/watch?v=HBZDKt9ZqSg
    4. [x] SBT in Scala Part 3 - Rock the JVM
       1. https://www.youtube.com/watch?v=VEEG1KnFAac
+   5. [ ] Scala & Slick - Rock the JVM :fire:
+      1. https://www.youtube.com/watch?v=Uwqf_8nwYN4
+      2. https://www.youtube.com/watch?v=9gbgy1XdK8Q
+      3. https://www.youtube.com/watch?v=M3zsW7RF0L8
+      4. https://www.youtube.com/watch?v=jd4pvAb83OU
    10. [ ] Hands-on Scala Programming
       1. https://www.handsonscala.com/index.html
    11. [ ] Diamond Architecture - DevInsideYou
@@ -49,10 +54,16 @@ My journey of learning various Scala frameworks and libraries to better improve 
       1. https://developer.lightbend.com/docs/akka-platform-guide/microservices-tutorial/index.html
 4. Cats
    1. [x] Cats - Rock the JVM
-   2. [ ] Cats Effect - Rock the JVM :fire:
+   2. [x] Cats Effect - Rock the JVM
+   3. [ ] FS2 - Rock the JVM :fire:
+      1. https://www.youtube.com/watch?v=XCpGtaJjkVY
+      2. https://www.youtube.com/watch?v=W0jh2sO-TZ8
+   3. [ ] Http4s - Rock the JVM :fire:
+      1. https://www.youtube.com/watch?v=v_gv6LsWdT0&t=1132s
+   3. [ ] Doobie - Rock the JVM :fire:
+      1. https://www.youtube.com/watch?v=SvFL7c6F9xI
+      2. https://www.youtube.com/watch?v=9xgOQh-Ppao
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
-   4. [ ] Typelevel - Rock the JVM
-      1. https://www.youtube.com/playlist?list=PLmtsMNDRU0ByzHzqLdoaeuKntdwCCB1d3
    5. [ ] Scala with Cats Book
       1. https://underscore.io/books/scala-with-cats/
    6. [ ] Making a full-blown Scala Project - Jakub Koziowski
@@ -65,6 +76,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
       1. https://www.youtube.com/watch?v=P8nGAo3Jp-Q
 5. Zio
    1. [ ] ZIO 2.0 - Rock the JVM :fire:
+   2. [ ] ZIO - Rock the JVM - Youtube Videos (do after course)
    2. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
 6. Spark & Flink
