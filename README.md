@@ -55,7 +55,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
 4. Cats
    1. [x] Cats - Rock the JVM
    2. [x] Cats Effect - Rock the JVM
-   3. [ ] FS2 - Rock the JVM :fire:
+   3. [x] FS2 - Rock the JVM
       1. https://www.youtube.com/watch?v=XCpGtaJjkVY
       2. https://www.youtube.com/watch?v=W0jh2sO-TZ8
    3. [ ] Http4s - Rock the JVM :fire:
