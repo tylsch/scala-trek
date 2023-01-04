@@ -58,7 +58,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
    3. [x] FS2 - Rock the JVM
       1. https://www.youtube.com/watch?v=XCpGtaJjkVY
       2. https://www.youtube.com/watch?v=W0jh2sO-TZ8
-   3. [ ] Http4s - Rock the JVM :fire:
+   3. [x] Http4s - Rock the JVM
       1. https://www.youtube.com/watch?v=v_gv6LsWdT0&t=1132s
    3. [ ] Doobie - Rock the JVM :fire:
       1. https://www.youtube.com/watch?v=SvFL7c6F9xI
