@@ -60,7 +60,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
       2. https://www.youtube.com/watch?v=W0jh2sO-TZ8
    3. [x] Http4s - Rock the JVM
       1. https://www.youtube.com/watch?v=v_gv6LsWdT0&t=1132s
-   3. [ ] Doobie - Rock the JVM :fire:
+   3. [x] Doobie - Rock the JVM
       1. https://www.youtube.com/watch?v=SvFL7c6F9xI
       2. https://www.youtube.com/watch?v=9xgOQh-Ppao
    3. [ ] Supercharge Scala Future - Udemy (Julien Truffaut)
