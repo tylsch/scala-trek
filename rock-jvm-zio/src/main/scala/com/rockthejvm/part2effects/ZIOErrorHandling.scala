@@ -1,7 +1,9 @@
 package com.rockthejvm.part2effects
 
-import zio.{IO, Task, URIO, ZIO, ZIOAppDefault}
+import zio.{Cause, IO, Task, UIO, URIO, ZIO, ZIOAppDefault}
 
+import java.io.IOException
+import java.net.NoRouteToHostException
 import scala.util.{Failure, Success, Try}
 
 object ZIOErrorHandling extends ZIOAppDefault {
@@ -81,6 +83,124 @@ object ZIOErrorHandling extends ZIOAppDefault {
     case Left(value) => ZIO.fail(value)
     case Right(value) => ZIO.succeed(value)
   }
+
+  /*
+  * Errors = failures presents in the ZIO type signature ("checked" errors)
+  * Defects = failures that are unrecoverable, unforeseen, NOT present in the ZIO type signature
+  *
+  * ZIO[R, E, A] can finish with Exit[E, A]
+  * - Success[A] containing a value
+  * - Cause[E]
+  * -- Fail[E] containing the error
+  * -- Die(t: Throwable) which was foreseen
+  *
+  * */
+
+  val divisionByZero: UIO[Int] = ZIO.succeed(1 / 0)
+
+  val failedInt: ZIO[Any, String ,Int] = ZIO.fail("I failed!")
+  val failureCausedExposed: ZIO[Any, Cause[String], Int] = failedInt.sandbox
+  val failureCauseHidden: ZIO[Any, String, Int] = failureCausedExposed.unsandbox
+  // fold with cause
+  val foldedWithCause = failedInt.foldCause(cause => s"this failed with ${cause.defects}", value => s"This succeeded with $value")
+  val foldedWithCause_v2 = failedInt.foldCauseZIO(cause => ZIO.succeed(s"this failed with ${cause.defects}"), value => ZIO.succeed(s"This succeeded with $value"))
+
+  /*
+    Good practice:
+    - at a lower level, your "errors" should be treated
+    - at a higher level, you should hide "errors" and assume they are unrecoverable
+   */
+
+  def callHttpEndpoint(url: String): ZIO[Any, IOException, String] =
+    ZIO.fail(new IOException("no internet, dummy!"))
+
+  val endpointCallWithDefects: ZIO[Any, Nothing, String] = callHttpEndpoint("rockthejvm.com").orDie
+
+  // refining the error channel
+  def callHttpEndpointWideError(url: String): ZIO[Any, Exception, String] =
+    ZIO.fail(new IOException("no internet!!"))
+
+  def callHttpEndpoint_v2(url: String): ZIO[Any, IOException, String] =
+    callHttpEndpointWideError(url).refineOrDie[IOException] {
+      case e: IOException => e
+      case _: NoRouteToHostException => new IOException(s"No route to hose to $url, can't fetch page")
+    }
+
+  // reverse: turn defects into the error channel
+  val endpointCallWithError = endpointCallWithDefects.unrefine {
+    case e => e.getMessage
+  }
+
+  /*
+    Combine effects with different errors
+   */
+
+  case class IndexError(message: String)
+  case class DbError(message: String)
+  val callApi: ZIO[Any, IndexError, String] = ZIO.succeed("page: <html></html>")
+  val queryDb: ZIO[Any, DbError, Int] = ZIO.succeed(0)
+  val combined: ZIO[Any, IndexError | DbError, (String, Int)] =
+    for
+      page <- callApi
+      rows <- queryDb
+    yield (page, rows) // lost type safety
+  /*
+    Solutions:
+      - design an error model
+      - use Scala 3 union types
+      - .mapError to some common error type
+  */
+
+  // 1 - make this effect fail with a TYPED error
+  val aBadFailure: ZIO[Any, Nothing, Int] = ZIO.succeed[Int](throw new RuntimeException("this is bad!"))
+  val aBetterFailure: ZIO[Any, Cause[Nothing], Int] = aBadFailure.sandbox // exposes the defect in the Cause
+  val aBetterFailure_v2: ZIO[Any, Throwable, Int] = aBadFailure.unrefine { // surfaces out the exception in the error channel
+    case e => e
+  }
+
+  // 2 - transform a zio into another zio with a narrower exception type
+  def ioException[R, A](zio: ZIO[R, Throwable, A]): ZIO[R, IOException, A] =
+    zio.refineOrDie {
+      case ioe: IOException => ioe
+    }
+
+  // 3
+  def left[R, E, A, B](zio: ZIO[R, E, Either[A, B]]): ZIO[R, Either[E, A], B] =
+    zio.foldZIO(
+      e => ZIO.fail(Left(e)),
+      either => either match {
+        case Left(a) => ZIO.fail(Right(a))
+        case Right(b) => ZIO.succeed(b)
+      }
+    )
+
+  // 4
+  val database = Map(
+    "daniel" -> 123,
+    "alice" -> 789
+  )
+  case class QueryError(reason: String)
+  case class UserProfile(name: String, phone: Int)
+
+  def lookupProfile(userId: String): ZIO[Any, QueryError, Option[UserProfile]] =
+    if (userId != userId.toLowerCase())
+      ZIO.fail(QueryError("user ID format is invalid"))
+    else
+      ZIO.succeed(database.get(userId).map(phone => UserProfile(userId, phone)))
+
+  // surface out all the failed cases of this API
+  def betterLookupProfile(userId: String): ZIO[Any, Option[QueryError], UserProfile] =
+    lookupProfile(userId).foldZIO(
+      error => ZIO.fail(Some(error)),
+      profileOption => profileOption match {
+        case Some(profile) => ZIO.succeed(profile)
+        case None => ZIO.fail(None)
+      }
+    )
+
+  def betterLookupProfile_v2(userId: String): ZIO[Any, Option[QueryError], UserProfile] =
+    lookupProfile(userId).some
+
 
   override def run: ZIO[Any, Any, Any] = ???
 }
