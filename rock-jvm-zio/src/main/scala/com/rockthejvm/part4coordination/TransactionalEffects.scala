@@ -238,5 +238,5 @@ object TransactionalEffects extends ZIOAppDefault {
     } yield ()
   }
 
-  override def run: ZIO[Any, Any, Any] = loop(cannotExploit(), 1)
+  override def run: ZIO[Any, Any, Any] = demoReadersWriters()
 }
