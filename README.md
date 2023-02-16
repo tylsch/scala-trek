@@ -75,8 +75,8 @@ My journey of learning various Scala frameworks and libraries to better improve 
    9. [ ] Easy and Efficient Data Validation with Cats by Daniela Sfregola
       1. https://www.youtube.com/watch?v=P8nGAo3Jp-Q
 5. Zio
-   1. [ ] ZIO 2.0 - Rock the JVM :fire:
-   2. [ ] ZIO - Rock the JVM - Youtube Videos (do after course)
+   1. [x] ZIO 2.0 - Rock the JVM
+   2. [ ] ZIO - Rock the JVM - Youtube Videos (do after course) :fire:
    2. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
 6. Spark & Flink
