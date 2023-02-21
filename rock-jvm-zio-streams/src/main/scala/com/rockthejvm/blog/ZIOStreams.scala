@@ -4,12 +4,14 @@ import zio.*
 import zio.stream.*
 import zio.json.*
 
+import java.io.{IOException, InputStream}
+
 object ZIOStreams extends ZIOAppDefault:
 
   // effects
   val aSuccess: ZIO[Any, Nothing, Int] = ZIO.succeed(42)
 
-  // ZStream = "collection" of 0 or more (maybe infinite) elements
+  // ZStream = "collection" (source) of 0 or more (maybe infinite) elements
   val aStream: ZStream[Any, Nothing, Int] = ZStream.fromIterable(1 to 10)
   val intStream: ZStream[Any, Nothing, Int] = ZStream(1, 2, 3, 4, 5, 6, 7, 8)
   val stringStream: ZStream[Any, Nothing, String] = intStream.map(_.toString)
@@ -56,5 +58,55 @@ object ZIOStreams extends ZIOAppDefault:
 
   val zio_v3 = stringStream.via(appLogic).run(sum)
 
-  override def run: ZIO[Any, Any, Any] = zio_v3.debug
+  val failStream: ZStream[Any, String, Int] = ZStream(1, 2) ++ ZStream.fail("Something bad") ++ ZStream(4,5)
+
+  class FakeInputStream[T <: Throwable](limit: Int, failAt: Int, failWith: => T) extends InputStream:
+    val data: Array[Byte] = "0123456789".getBytes
+    var counter: Int = 0
+    var index: Int = 0
+
+    override def read(): RuntimeFlags =
+      if (counter == limit) -1
+      else if (counter == failAt) throw failWith
+      else
+        val result = data(index)
+        index = (index + 1) % data.length
+        counter += 1
+        result
+
+  val nonFailingStream: ZStream[Any, IOException, String] =
+    ZStream.fromInputStream(new FakeInputStream(12, 99, new IOException("Something bad")), chunkSize = 1)
+      .map(byte => new String(Array(byte)))
+
+  val sink: ZSink[Any, Nothing, String, Nothing, String] =
+    ZSink.collectAll[String].map(chunk => chunk.mkString("-"))
+
+  val failingStream: ZStream[Any, IOException, String] =
+    ZStream.fromInputStream(new FakeInputStream(10, 5, new IOException("Something bad")), chunkSize = 1)
+      .map(byte => new String(Array(byte)))
+
+  val defectStream: ZStream[Any, IOException, String] =
+    ZStream.fromInputStream(new FakeInputStream(10, 5, new RuntimeException("Something unforeseen")), chunkSize = 1)
+      .map(byte => new String(Array(byte)))
+
+  // recovery
+  val recoveryStream: ZStream[Any, Throwable, String] =
+    ZStream("a", "b", "c")
+
+  // orElse - chain a new stream AT THE POINT of failure
+  val recoveredEffect = failingStream.orElse(recoveryStream).run(sink)
+  // orElseEither - all elements from the original stream = Left, all elements from the fallback = Right
+  val recoveredWithEither: ZStream[Any, Throwable, Either[String, String]] = failingStream.orElseEither(recoveryStream)
+
+
+  // catch
+  val caughtErrors = failingStream.catchSome {
+    case _: IOException => recoveryStream
+  }
+
+  // catchSomeCause, catchAll, catchAllCause
+  val errorContained: ZStream[Any, Nothing, Either[IOException, String]] = failingStream.either
+
+
+  override def run: ZIO[Any, Any, Any] = errorContained.run(ZSink.collectAll).debug
 
