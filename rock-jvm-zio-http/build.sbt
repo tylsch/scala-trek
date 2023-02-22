@@ -9,6 +9,6 @@ lazy val root = (project in file("."))
       "dev.zio" %% "zio" % "2.0.9",
       "dev.zio" %% "zio-streams" % "2.0.9",
       "dev.zio" %% "zio-json" % "0.4.2",
-      "io.d11" %% "zhttp"      % "2.0.0-RC7"
+      "dev.zio" %% "zio-http" % "0.0.4"
     )
   )

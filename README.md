@@ -77,7 +77,7 @@ My journey of learning various Scala frameworks and libraries to better improve 
 5. Zio
    1. [x] ZIO 2.0 - Rock the JVM
    2. [x] ZIO Streams Part 1, 2, 3 - Rock the JVM
-   3. [ ] ZIO HTTP - Rock the JVM :fire:
+   3. [x] ZIO HTTP - Rock the JVM
    2. [ ] Zio - DevInsideYou
       1. https://www.youtube.com/playlist?list=PLJGDHERh23x-_ammk-n2XuZWhoRVB-wAF
 6. Spark & Flink
